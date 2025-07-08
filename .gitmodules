@@ -1,0 +1,3 @@
+[submodule "src/lib/domestique.ts"]
+	path = src/lib/domestique.ts
+	url = https://github.com/WlodekM/domestique.ts.git
