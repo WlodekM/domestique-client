@@ -24,5 +24,8 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"eventemitter3": "^5.0.1"
 	}
 }

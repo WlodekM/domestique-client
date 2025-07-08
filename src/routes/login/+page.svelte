@@ -1,10 +1,29 @@
 <script lang="ts">
+    import client from "$lib/client";
+    import { showNavbar, page } from "$lib/stores";
+    import { goto } from '$app/navigation';
     let username: string = '',
         password: string = '';
     let statusText: HTMLSpanElement;
-    function login(e: Event) {
+    async function login(e: Event) {
         e.preventDefault();
-        statusText.innerText = 'uh'
+        statusText.innerText = '';
+        let success: boolean = true;
+        try {
+            await client.login(username, password)
+        } catch (error) {
+            statusText.innerText = `${(error as Error | string).toString()}`
+            success = false;
+        } finally {
+            if (!success)
+                return;
+            console.log('succees?')
+            client.on('ready', () => {
+                $showNavbar = true;
+                $page = 'home';
+                goto('/home');
+            })
+        }
     }
 </script>
 

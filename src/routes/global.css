@@ -1,0 +1,41 @@
+:root {
+    color-scheme: dark;
+    color: #ffc3f1;
+    background: #3e303a;
+}
+
+input {
+    border: none;
+    border-bottom: #bf92b4 2px solid;
+    /* background: none; */
+    padding: .35em;
+    margin-bottom: .5em;
+    background: rgb(43, 42, 51);
+    color: #ffc3f1;
+}
+
+input:placeholder-shown {
+    color: #bf92b4;
+    font-style: italic;
+}
+
+input:active, input:focus {
+    border-bottom-color: #ffc3f1;
+    border-bottom: #ffc3f1 2px solid;
+}
+
+button {
+    background: rgb(43, 42, 51);
+    border: none;
+    color: #ffc3f1;
+    padding: .35em;
+}
+
+button:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+a {
+    color: rgb(140, 140, 255)
+}
