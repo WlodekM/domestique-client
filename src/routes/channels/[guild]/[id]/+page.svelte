@@ -1,14 +1,13 @@
 <script lang="ts">
 	import client from "$lib/client";
-	import { page as spage } from "$lib/stores";
 	import { goto } from "$app/navigation";
 	import { onMount, onDestroy } from "svelte";
-	if (client.ws?.readyState != WebSocket.OPEN) {
-		$spage = "login";
-		goto("/login");
-	}
+    import requireLogin from "$lib/requireLogin";
+    requireLogin()
 	import { page } from "$app/stores";
-	import type { CMessage, CChannel } from "$lib/domestique.ts/client";
+	import { CMessage, CChannel, CUser } from "$lib/domestique.ts/client";
+	import type { User } from "$lib/domestique.ts/client";
+    import MessageGroup from "$lib/MessageGroup.svelte";
 
 	let id: string;
 	$: id = $page.params.id;
@@ -43,6 +42,27 @@
 		await channel.load()
 		messages.unshift(...channel.messages.toReversed());
 	}
+	interface MessageGroup {
+		author: User,
+		messages: CMessage[]
+	}
+	type MessageGroupArray = MessageGroup[];
+	function getGroups(messages:CMessage[]): MessageGroupArray {
+		return messages.reduce<MessageGroupArray>((prev: MessageGroupArray, curr) => {
+			if ((!prev.at(-1) ||
+				Number(curr.timestamp) -
+				Number(prev.at(-1)?.messages?.at(-1)?.timestamp ?? -Infinity) < 60000 )&&
+				prev.at(-1)?.author.username == curr.author?.username) {
+				prev.at(-1)?.messages.push(curr)
+				return prev
+			}
+			prev.push({
+				author: curr.author as User,
+				messages: [curr]
+			})
+			return prev;
+		}, [])
+	}
 </script>
 
 {#await client.guilds.get(guildId)}
@@ -56,10 +76,8 @@
 		{:then}
 			{#key symbolThing}
 				render {renders}<br />
-				{#each messages as message}
-					<div>
-						{message.author?.displayName}: {message.content}
-					</div>
+				{#each getGroups(messages) as group}
+					<MessageGroup author={group.author} messages={group.messages} />
 				{/each}
 			{/key}
 		{/await}

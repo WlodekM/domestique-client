@@ -1,20 +1,24 @@
 import { Client } from "./domestique.ts/client.ts";
-import { page } from "./stores.ts";
+import { page, showNavbar } from "./stores.ts";
 import { goto } from '$app/navigation';
 
 const client = new Client();
 
-client.ws?.addEventListener('close', _ => {
-    console.error('connection closed')
-    page.set('login')
-    goto('login');
-})
+export function setupWs() {
+    client.ws?.addEventListener('close', _ => {
+        console.error('connection closed')
+        page.set('login')
+        goto('login');
+        showNavbar.set(false)
+    })
 
-client.ws?.addEventListener('error', _ => {
-    console.error('connection errored')
-    page.set('login')
-    goto('login');
-})
+    client.ws?.addEventListener('error', _ => {
+        console.error('connection errored')
+        page.set('login')
+        goto('login');
+        showNavbar.set(false)
+    })
+}
 
 const realEmit = client.emit;
 

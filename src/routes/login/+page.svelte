@@ -1,5 +1,5 @@
 <script lang="ts">
-    import client from "$lib/client";
+    import client, { setupWs } from "$lib/client";
     import { showNavbar, page } from "$lib/stores";
     import { goto } from '$app/navigation';
     let username: string = '',
@@ -18,6 +18,7 @@
             if (!success)
                 return;
             console.log('succees?')
+            setupWs()
             client.on('ready', () => {
                 $showNavbar = true;
                 $page = 'home';
