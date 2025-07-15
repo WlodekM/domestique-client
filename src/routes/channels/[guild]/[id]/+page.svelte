@@ -14,13 +14,16 @@
 	let guildId: string;
 	$: guildId = $page.params.guild;
 	onMount(async () => {
-		if (!client.guilds.loaded(guildId)) return goto("/guilds");
+		if (!client.guilds.loaded(guildId)) {
+			console.log('guild not loaded')
+			return goto("/guilds");
+		}
 		const guild = await client.guilds.get(guildId);
 		if (!guild._channels.includes(id)) return goto("/guilds");
 		console.log('added lissner')
 		client.on("message", onMessage);
 	});
-	let input: HTMLInputElement;
+	let input: HTMLTextAreaElement;
 	let renders = 0;
 	let symbolThing: Symbol = Symbol();
 	function onMessage({message, channel}: {message: CMessage, channel: string}) {
@@ -52,7 +55,14 @@
 			if ((!prev.at(-1) ||
 				Number(curr.timestamp) -
 				Number(prev.at(-1)?.messages?.at(-1)?.timestamp ?? -Infinity) < 60000 )&&
-				prev.at(-1)?.author.username == curr.author?.username) {
+				prev.at(-1)?.author.username == curr.author?.username && !(
+					curr.author?.username == 'fairlight' &&
+					prev.at(-1) &&
+					prev.at(-1)?.messages.at(-1)?.author?.username == 'fairlight' &&
+					prev.at(-1)?.messages.at(-1)?.content.split(': ')[0] &&
+					prev.at(-1)?.messages.at(-1)?.content.split(': ')[0] !==
+					curr.content.split(': ')[0]
+				)) {
 				prev.at(-1)?.messages.push(curr)
 				return prev
 			}
@@ -81,7 +91,7 @@
 				{/each}
 			{/key}
 		{/await}
-		<input type="text" bind:this={input} />
+		<textarea bind:this={input} placeholder="Message..."></textarea>
 		<button
 			on:click={(e) => {
 				channel.send(input.value);
