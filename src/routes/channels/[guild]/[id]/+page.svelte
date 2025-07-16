@@ -24,6 +24,7 @@
 		client.on("message", onMessage);
 	});
 	let input: HTMLTextAreaElement;
+	let sendButton: HTMLButtonElement;
 	let renders = 0;
 	let symbolThing: Symbol = Symbol();
 	function onMessage({message, channel}: {message: CMessage, channel: string}) {
@@ -91,12 +92,42 @@
 				{/each}
 			{/key}
 		{/await}
-		<textarea bind:this={input} placeholder="Message..."></textarea>
-		<button
-			on:click={(e) => {
-				channel.send(input.value);
-				input.value = "";
-			}}>send</button
-		>
+		<div class="messaging-area">
+			<textarea
+				bind:this={input}
+				on:keypress={(event) => {
+					if (event.key != 'Enter')
+						return;
+					if (event.shiftKey)
+						return;
+					event.preventDefault()
+					sendButton.click()
+				}}
+				placeholder="Message..."
+				rows="1"
+				></textarea>
+			<button
+				on:click={(e) => {
+					channel.send(input.value);
+					input.value = "";
+				}} bind:this={sendButton}>send</button
+			>
+		</div>
 	{/await}
 {/await}
+<style>
+	.messaging-area {
+		display: flex;
+		align-items: stretch;
+		gap: .5em;
+		/* background: red; */
+	}
+	.messaging-area > textarea {
+		flex-grow: 1;
+    	padding: .35em;
+		margin: 0;
+	}
+	.messaging-area > button {
+		height: 100%;
+	}
+</style>

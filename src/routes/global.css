@@ -4,7 +4,7 @@
     background: #3e303a;
 }
 
-input {
+input, textarea {
     border: none;
     border-bottom: #bf92b4 2px solid;
     /* background: none; */
@@ -14,12 +14,13 @@ input {
     color: #ffc3f1;
 }
 
-input:placeholder-shown {
+input:placeholder-shown, textarea:placeholder-shown {
     color: #bf92b4;
     font-style: italic;
 }
 
-input:active, input:focus {
+input:active, input:focus,
+textarea:active, textarea:focus {
     border-bottom-color: #ffc3f1;
     border-bottom: #ffc3f1 2px solid;
 }
