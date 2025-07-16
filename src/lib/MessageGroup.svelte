@@ -2,6 +2,7 @@
     import { goto } from "$app/navigation";
     import client from "./client";
     import type { CMessage, User } from "./domestique.ts/client";
+    import Message from "./Message.svelte";
     export let author: User;
     export let messages: CMessage[];
 
@@ -22,12 +23,7 @@
         {/if}
     </div>
     {#each messages as message}
-        <div class="message">
-            {getContent(message.content)}
-            <span class="timestamp">
-                {message.timestamp.getHours().toString().padStart(2,'0')}:{message.timestamp.getMinutes().toString().padStart(2,'0')}
-            </span>
-        </div>
+        <Message author={author} message={message} />
     {/each}
 </div>
 
@@ -38,10 +34,6 @@
         display: flex;
         align-items: center;
         gap: 1em;
-    }
-    .message {
-        display: flex;
-        justify-content: space-between;
     }
     .badge {
         display: inline-block;
