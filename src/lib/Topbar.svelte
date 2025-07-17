@@ -10,6 +10,7 @@
         <div class="pages">
             <a href="/guilds">guilds</a>
             <a href="/home">home</a>
+            <a href="/" on:click={()=>localStorage.removeItem('token')}>log out</a>
         </div>
     </div>
 {/if}

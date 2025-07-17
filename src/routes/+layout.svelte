@@ -9,7 +9,7 @@
 
 <style>
 	.page {
-		max-height: 100vh;
+		max-height: calc(100vh - 16px);
 		display: flex;
 		flex-direction: column;
 		padding: 8px;
