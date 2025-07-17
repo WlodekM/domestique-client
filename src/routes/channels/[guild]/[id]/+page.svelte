@@ -1,9 +1,8 @@
-<script lang="ts">
+<script lang="ts" >
 	import client from "$lib/client";
 	import { goto } from "$app/navigation";
 	import { onMount, onDestroy } from "svelte";
     import requireLogin from "$lib/requireLogin";
-    requireLogin()
 	import { page } from "$app/stores";
 	import { CMessage, CChannel, CUser } from "$lib/domestique.ts/client";
 	import type { User } from "$lib/domestique.ts/client";
@@ -13,16 +12,6 @@
 	$: id = $page.params.id;
 	let guildId: string;
 	$: guildId = $page.params.guild;
-	onMount(async () => {
-		if (!client.guilds.loaded(guildId)) {
-			console.log('guild not loaded')
-			return goto("/guilds");
-		}
-		const guild = await client.guilds.get(guildId);
-		if (!guild._channels.includes(id)) return goto("/guilds");
-		console.log('added lissner')
-		client.on("message", onMessage);
-	});
 	let input: HTMLTextAreaElement;
 	let sendButton: HTMLButtonElement;
 	let renders = 0;
@@ -74,52 +63,80 @@
 			return prev;
 		}, [])
 	}
+	let ready: boolean = false;
+	const readyPromise = requireLogin()
+		.then(()=>ready = true);
+	onMount(async () => {
+		if (!ready)
+			await readyPromise;
+		console.log(client._guilds)
+		if (!client.guilds.loaded(guildId)) {
+			if (!client._guilds.includes(guildId)) {
+				console.log('guild not loaded')
+				return goto("/guilds");
+			}
+			await client.guilds.get(guildId)
+		}
+		const guild = await client.guilds.get(guildId);
+		if (!guild._channels.includes(id)) return goto("/guilds");
+		console.log('added lissner')
+		client.on("message", onMessage);
+	});
 </script>
-
-{#await client.guilds.get(guildId)}
-	loading guild...
-{:then guild}
-	{#await guild.channels.get(id)}
-		loading channel
-	{:then channel}
-		{#await loadMessages(channel)}
-			loading messages...
-		{:then}
-			{#key symbolThing}
-				render {renders}<br />
-				{#each getGroups(messages) as group}
-					<MessageGroup author={group.author} messages={group.messages} />
-				{/each}
-			{/key}
+<div class="channel-page">
+	{#await readyPromise}logging in...
+	{:then}
+		{#await client.guilds.get(guildId)}
+			loading guild...
+		{:then guild}
+			{#await guild.channels.get(id)}
+				loading channel
+			{:then channel}
+				<div class="messages">
+					{#await loadMessages(channel)}
+						loading messages...
+					{:then}
+						{#key symbolThing}
+							<!-- render {renders}<br /> -->
+							{#each getGroups(messages) as group}
+								<MessageGroup author={group.author} messages={group.messages} />
+							{/each}
+						{/key}
+					{/await}
+				</div>
+				<div class="messaging-area">
+					<textarea
+						bind:this={input}
+						on:keypress={(event) => {
+							if (event.key != 'Enter')
+								return;
+							if (event.shiftKey)
+								return;
+							event.preventDefault()
+							sendButton.click()
+						}}
+						placeholder="Message..."
+						rows="1"
+						></textarea>
+					<button
+						on:click={(e) => {
+							channel.send(input.value);
+							input.value = "";
+						}} bind:this={sendButton}>send</button
+					>
+				</div>
+			{/await}
 		{/await}
-		<div class="messaging-area">
-			<textarea
-				bind:this={input}
-				on:keypress={(event) => {
-					if (event.key != 'Enter')
-						return;
-					if (event.shiftKey)
-						return;
-					event.preventDefault()
-					sendButton.click()
-				}}
-				placeholder="Message..."
-				rows="1"
-				></textarea>
-			<button
-				on:click={(e) => {
-					channel.send(input.value);
-					input.value = "";
-				}} bind:this={sendButton}>send</button
-			>
-		</div>
 	{/await}
-{/await}
+</div>
 <style>
 	.messaging-area {
 		display: flex;
 		align-items: stretch;
 		gap: .5em;
+		padding: .5em;
+		padding-inline: calc(.5em - 8px);
+		padding-bottom: calc(.5em - 8px);
 		/* background: red; */
 	}
 	.messaging-area > textarea {
