@@ -4,6 +4,11 @@
     background: #3e303a;
 }
 
+body {
+    max-height: 100vh;
+    margin: 0;
+}
+
 input, textarea {
     border: none;
     border-bottom: #bf92b4 2px solid;

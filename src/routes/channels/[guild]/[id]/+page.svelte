@@ -138,6 +138,12 @@
 		padding-inline: calc(.5em - 8px);
 		padding-bottom: calc(.5em - 8px);
 		/* background: red; */
+		position: sticky;
+		bottom: 0;
+	}
+	.channel-page {
+		max-height: 100%;
+		overflow: auto;
 	}
 	.messaging-area > textarea {
 		flex-grow: 1;
