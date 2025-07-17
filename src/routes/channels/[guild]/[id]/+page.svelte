@@ -1,4 +1,5 @@
 <script lang="ts" >
+	//TODO: put this in a Channel.svelte or something
 	import client from "$lib/client";
 	import { goto } from "$app/navigation";
 	import { onMount, onDestroy } from "svelte";
@@ -7,6 +8,11 @@
 	import { CMessage, CChannel, CUser } from "$lib/domestique.ts/client";
 	import type { User } from "$lib/domestique.ts/client";
     import MessageGroup from "$lib/MessageGroup.svelte";
+	import { tick } from "svelte";
+
+	function scrollToBottomOfElement(element: HTMLElement) {
+		element.scrollTo(0, element.scrollHeight);
+	}
 
 	let id: string;
 	$: id = $page.params.id;
@@ -16,14 +22,20 @@
 	let sendButton: HTMLButtonElement;
 	let renders = 0;
 	let symbolThing: Symbol = Symbol();
-	function onMessage({message, channel}: {message: CMessage, channel: string}) {
+	let messagesElem: HTMLDivElement;
+	async function onMessage({message, channel}: {message: CMessage, channel: string}) {
 		console.log(channel, id);
 		if (channel !== id)
 			return;
 		console.log("re-rendering");
+		const parent: HTMLDivElement = messagesElem.parentElement as HTMLDivElement;
+        let scrolledToBottom = //@ts-ignore: idk y but it no like scrollTopMax
+			parent.scrollTopMax == parent.scrollTop;
 		symbolThing = Symbol();
 		renders++;
 		messages.push(message)
+		await tick()
+        if(scrolledToBottom) scrollToBottomOfElement(parent);
 	}
 
 	onDestroy(() => {
@@ -34,6 +46,7 @@
 	async function loadMessages(channel: CChannel) {
 		await channel.load()
 		messages.unshift(...channel.messages.toReversed());
+		tick().then(()=>scrollToBottomOfElement(messagesElem.parentElement!));
 	}
 	interface MessageGroup {
 		author: User,
@@ -92,7 +105,7 @@
 			{#await guild.channels.get(id)}
 				loading channel
 			{:then channel}
-				<div class="messages">
+				<div class="messages" bind:this={messagesElem}>
 					{#await loadMessages(channel)}
 						loading messages...
 					{:then}
