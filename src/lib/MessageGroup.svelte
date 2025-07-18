@@ -17,9 +17,11 @@
 <div class="message-group">
     <div class="header">
         {#if isBridge}
-            {(messages[0].content.match(/^(.+): /)??[])[1]} <div class="badge">BRIDGED</div>
+        {(messages[0].content.match(/^(.+): /)??[])[1]} <div class="badge">BRIDGED</div>
         {:else}
-            {author.username}
+            <a href="/users/{messages[0]._author}" title="@{author.username}">
+                {author.displayName}
+            </a>
         {/if}
     </div>
     {#each messages as message}
