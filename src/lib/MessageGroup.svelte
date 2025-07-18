@@ -19,7 +19,7 @@
         {#if isBridge}
         {(messages[0].content.match(/^(.+): /)??[])[1]} <div class="badge">BRIDGED</div>
         {:else}
-            <a href="/users/{messages[0]._author}" title="@{author.username}">
+            <a href="/users/{messages[0]._author}" title="@{author.username}" style="color:#ffc3f1">
                 {author.displayName}
             </a>
         {/if}
