@@ -31,8 +31,7 @@ window.require = () => {
 }
 if (!window.module)
 	window.module = {}
-await import('https://cdn.jsdelivr.net/npm/markdown-it-katex@2.0.3/index.min.js')
-const markdownitKaTeX = window.module.exports
+
 export const md = markdownit("default", {
 	highlight: function (str: string, lang: string) {
 		if (lang && hljs.getLanguage(lang)) {
@@ -49,7 +48,10 @@ export const md = markdownit("default", {
 	breaks: true
 });
 md.use(markdownitMark);
-md.use(markdownitKaTeX, { throwOnError: false, katex });
+import('https://cdn.jsdelivr.net/npm/markdown-it-katex@2.0.3/index.min.js').then(() => {
+	const markdownitKaTeX = window.module.exports
+	md.use(markdownitKaTeX, { throwOnError: false, katex });
+})
 // md.use((md) => {
 // 	const defaultRender = md.renderer.rules.text || ((tokens, idx) => tokens[idx].content)
 
