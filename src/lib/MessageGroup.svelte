@@ -9,7 +9,7 @@
     const isBridge: boolean = author.username == 'fairlight';
     function getContent(content: string) {
         if (isBridge)
-            content = content.replace(/^.+: /g,'');
+            content = content.replace(/^.+?: /g,'');
         return content
     }
 </script>
@@ -41,7 +41,7 @@
         display: inline-block;
         padding-inline: .5em;
         background: #ffc3f1;
-        color: #3e303a;
+        color: var(--bg);
         border-radius: 2em;
         font-size: .8em;
     }

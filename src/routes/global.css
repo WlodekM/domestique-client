@@ -1,7 +1,8 @@
 :root {
     color-scheme: dark;
     color: #ffc3f1;
-    background: #3e303a;
+    --bg: #251d23;
+    background: var(--bg);
 }
 
 body {
