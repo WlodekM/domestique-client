@@ -1,8 +1,13 @@
-import { Client } from "./domestique.ts/client.ts";
+import { CChannel, CGuild, Client, CMessage, CUser } from "./domestique.ts/client.ts";
 import { page, showNavbar } from "./stores.ts";
 import { goto } from '$app/navigation';
 
 const client = new Client();
+
+globalThis.CChannel = CChannel
+globalThis.CGuild = CGuild
+globalThis.CMessage = CMessage
+globalThis.CUser = CUser
 
 export function setupWs() {
     client.ws?.addEventListener('close', _ => {
