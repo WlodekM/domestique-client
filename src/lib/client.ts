@@ -29,4 +29,16 @@ client.emit = function (...args) {
 
 window.client = client;
 
+const realFetch = client.cache.requests.fetch;
+
+const requestsList: string[] = []
+
+client.cache.requests.fetch = function fetch(path:string, init: RequestInit): Promise<Response> {
+    console.log(init.method??'GET', path, {trace:new Error()})
+    requestsList.push(path)
+    return realFetch(path, init)
+}
+
+window.requestsList = requestsList;
+
 export default client;

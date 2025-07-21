@@ -93,7 +93,7 @@
 		return md.renderer.render(tokens, md.options, {});
 	}
 </script>
-<div class="message">
+<div class="message {message.id === '0' ? 'ghost' : ''}">
 	<div class="message-content">
 		{#await getContent(message.content)}{:then content} 
 			{@html content}
@@ -107,6 +107,9 @@
 	.message {
 		display: flex;
 		justify-content: space-between;
+	}
+	.message.ghost {
+		color: #ffc3f188;
 	}
 	.message-content :global(p) {
 		margin: 0;

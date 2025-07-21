@@ -14,12 +14,12 @@
     }
 </script>
 
-<div class="message-group">
+<div class="message-group {messages[0]?.id === '0' ? 'ghost' : ''}">
     <div class="header">
         {#if isBridge}
         {(messages[0].content.match(/^(.+): /)??[])[1]} <div class="badge">BRIDGED</div>
         {:else}
-            <a href="/users/{messages[0]._author}" title="@{author.username}" style="color:#ffc3f1">
+            <a href="/users/{messages[0]._author}" title="@{author.username}">
                 {author.displayName}
             </a>
         {/if}
@@ -37,6 +37,12 @@
         align-items: center;
         gap: 1em;
     }
+    .header a {
+        color: #ffc3f1
+    }
+	.message-group.ghost, .message-group.ghost .header a {
+		color: #ffc3f188;
+	}
     .badge {
         display: inline-block;
         padding-inline: .5em;

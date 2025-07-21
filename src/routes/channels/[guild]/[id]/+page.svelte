@@ -6,7 +6,7 @@
     import requireLogin from "$lib/requireLogin";
 	import { page } from "$app/stores";
 	import { CMessage, CChannel, CUser } from "$lib/domestique.ts/client";
-	import type { User } from "$lib/domestique.ts/client";
+	import type { CGuild, User } from "$lib/domestique.ts/client";
     import MessageGroup from "$lib/MessageGroup.svelte";
 	import { tick } from "svelte";
 
@@ -31,9 +31,12 @@
 		const parent: HTMLDivElement = messagesElem.parentElement as HTMLDivElement;
         let scrolledToBottom = //@ts-ignore: idk y but it no like scrollTopMax
 			parent.scrollTopMax == parent.scrollTop;
-		symbolThing = Symbol();
 		renders++;
 		messages.push(message)
+		const ghostMessage = ghostMessages.findIndex(m => m._author === message._author && m.content === message.content);
+		if (ghostMessage !== -1)
+			ghostMessages.splice(ghostMessage);
+		symbolThing = Symbol();
 		await tick()
         if(scrolledToBottom) scrollToBottomOfElement(parent);
 	}
@@ -43,6 +46,7 @@
 		client.off('message', onMessage);
 	});
 	let messages: CMessage[] = []
+	let ghostMessages: CMessage[] = []
 	async function loadMessages(channel: CChannel) {
 		await channel.load()
 		messages.unshift(...channel.messages.toReversed());
@@ -79,6 +83,8 @@
 	let ready: boolean = false;
 	const readyPromise = requireLogin()
 		.then(()=>ready = true);
+	let guildFetched: (value: CGuild | PromiseLike<CGuild>) => void;
+	const fetchingGuild = new Promise<CGuild>((resolve) => {guildFetched = resolve})
 	onMount(async () => {
 		if (!ready)
 			await readyPromise;
@@ -90,16 +96,20 @@
 			}
 			await client.guilds.get(guildId)
 		}
-		const guild = await client.guilds.get(guildId);
+		const guild: CGuild = await client.guilds.get(guildId);
+		guildFetched(guild);
 		if (!guild._channels.includes(id)) return goto("/guilds");
 		console.log('added lissner')
 		client.on("message", onMessage);
 	});
 </script>
 <div class="channel-page">
+	<button title="does buttony things" on:click={()=> {
+		console.log(messages, ghostMessages)
+	}}>the button button</button>
 	{#await readyPromise}logging in...
 	{:then}
-		{#await client.guilds.get(guildId)}
+		{#await fetchingGuild}
 			loading guild...
 		{:then guild}
 			{#await guild.channels.get(id)}
@@ -111,7 +121,7 @@
 					{:then}
 						{#key symbolThing}
 							<!-- render {renders}<br /> -->
-							{#each getGroups(messages) as group}
+							{#each getGroups([...messages, ...ghostMessages]) as group}
 								<MessageGroup author={group.author} messages={group.messages} />
 							{/each}
 						{/key}
@@ -132,8 +142,28 @@
 						rows="1"
 						></textarea>
 					<button
-						on:click={(e) => {
-							channel.send(input.value);
+						on:click={async (e) => {
+							const ghostMessage = 
+								new CMessage(client.cache, {
+									authorId: client.userId,
+									channelId: id,
+									content: input.value,
+									guildId,
+									messageId: '0',
+									timestamp: Date.now()
+								}, channel);
+							ghostMessages.push(ghostMessage)
+							await ghostMessage.load();
+							channel.send(input.value)
+								.catch((e: Error) => console.error('sending error', e));
+							renders++
+							console.log("re-rendering");
+							symbolThing = Symbol();
+							const parent: HTMLDivElement = messagesElem.parentElement as HTMLDivElement;
+							let scrolledToBottom = //@ts-ignore: idk y but it no like scrollTopMax
+								parent.scrollTopMax == parent.scrollTop;
+							await tick();
+        					if(scrolledToBottom) scrollToBottomOfElement(parent);
 							input.value = "";
 						}} bind:this={sendButton}>send</button
 					>
