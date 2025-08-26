@@ -24,7 +24,7 @@
 	let symbolThing: Symbol = Symbol();
 	let messagesElem: HTMLDivElement;
 	async function onMessage({message, channel}: {message: CMessage, channel: string}) {
-		console.log(channel, id);
+		// console.log(channel, id);
 		if (channel !== id)
 			return;
 		console.log("re-rendering");
@@ -42,7 +42,7 @@
 	}
 
 	onDestroy(() => {
-		console.log('removed lisserner')
+		// console.log('removed lisserner')
 		client.off('message', onMessage);
 	});
 	let messages: CMessage[] = []
@@ -88,10 +88,10 @@
 	onMount(async () => {
 		if (!ready)
 			await readyPromise;
-		console.log(client._guilds)
+		// console.log(client._guilds)
 		if (!client.guilds.loaded(guildId)) {
 			if (!client._guilds.includes(guildId)) {
-				console.log('guild not loaded')
+				// console.log('guild not loaded')
 				return goto("/guilds");
 			}
 			await client.guilds.get(guildId)
@@ -104,9 +104,9 @@
 	});
 </script>
 <div class="channel-page">
-	<button title="does buttony things" on:click={()=> {
+	<!-- <button title="does buttony things" on:click={()=> {
 		console.log(messages, ghostMessages)
-	}}>the button button</button>
+	}}>the button button</button> -->
 	{#await readyPromise}logging in...
 	{:then}
 		{#await fetchingGuild}
