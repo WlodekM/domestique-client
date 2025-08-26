@@ -16,6 +16,9 @@ export function makeClient() {
     const wasConnected = typeof client.ws !== 'undefined'
     if (client.ws)
         client.ws.close();
+    client.cache.clearAll();
+    client._channels = [];
+    client._guilds = [];
     client.wsUrl = wsurl;
     client.apiUrl = apiurl;
     client.cache.apiUrl = apiurl;
