@@ -11,9 +11,16 @@ let client: Client;
 export function makeClient() {
     const wsurl: string = localStorage.getItem('wsurl') ?? "wss://api.chat.eqilia.eu/api/v0/live/ws";
     const apiurl: string = localStorage.getItem('apiurl') ?? "https://api.chat.eqilia.eu";
-    if (client)
-        client.ws?.close();
-    client = new Client(wsurl, apiurl);
+    if (!client)
+        return client = new Client(wsurl, apiurl);
+    const wasConnected = typeof client.ws !== 'undefined'
+    if (client.ws)
+        client.ws.close();
+    client.wsUrl = wsurl;
+    client.apiUrl = apiurl;
+    client.cache.apiUrl = apiurl;
+    if (wasConnected)
+        client.connect();
 }
 
 makeClient()
