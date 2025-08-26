@@ -3,6 +3,7 @@
     color: #ffc3f1;
     --bg: #251d23;
     background: var(--bg);
+    font-family: 'Terminus', Courier, 'Courier New', monospace;
 }
 
 body {
