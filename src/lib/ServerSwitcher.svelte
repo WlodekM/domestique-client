@@ -7,8 +7,8 @@
 			'https://api.chat.eqilia.eu'
 		],
 		'berry\'s server': [
-			'ws://domestique.goog-search.eu.org/api/v0/live/ws',
-			'http://domestique.goog-search.eu.org'
+			'wss://domestique.goog-search.eu.org/api/v0/live/ws',
+			'https://domestique.goog-search.eu.org'
 		],
 		'localhost': [
 			'ws://localhost:40000/api/v0/live/ws',
