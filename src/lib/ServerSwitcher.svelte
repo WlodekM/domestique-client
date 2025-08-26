@@ -6,6 +6,10 @@
 			'wss://api.chat.eqilia.eu/api/v0/live/ws',
 			'https://api.chat.eqilia.eu'
 		],
+		'berry\'s server': [
+			'ws://domestique.goog-search.eu.org/api/v0/live/ws',
+			'http://domestique.goog-search.eu.org'
+		],
 		'localhost': [
 			'ws://localhost:40000/api/v0/live/ws',
 			'http://localhost:40000'
@@ -20,6 +24,8 @@
 			['Custom'];
 		return name;
 	}
+	let customWsUrl = localStorage.getItem('wsurl') ?? "wss://api.chat.eqilia.eu/api/v0/live/ws";
+	let customApiUrl = localStorage.getItem('apiurl') ?? "https://api.chat.eqilia.eu";
 </script>
 
 Current server: {#key serverSymbol}{getCurrentServer()}{/key}
@@ -40,4 +46,16 @@ Servers:
 			</button>
 		</li>
 	{/each}
+	<li>
+		Custom
+		<br>
+		<input type="text" bind:value={customWsUrl} placeholder="Websocket URL">
+		<input type="text" bind:value={customApiUrl} placeholder="API URL">
+		<button on:click={() => {
+			localStorage.setItem('wsurl', customWsUrl);
+			localStorage.setItem('apiurl', customApiUrl);
+			serverSymbol = Symbol();
+			makeClient()
+		}}>set URLs</button>
+	</li>
 </ul>
