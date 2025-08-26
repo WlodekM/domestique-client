@@ -3,24 +3,26 @@
 	import { showNavbar, page } from "$lib/stores";
 	import { goto } from '$app/navigation';
 	import { onMount } from "svelte";
+    import ServerSwitcher from "$lib/ServerSwitcher.svelte";
 	let username: string = '',
 		password: string = '';
 	let statusText: HTMLSpanElement;
 	async function login(e: Event) {
+		e.preventDefault();
+		statusText.innerText = '';
 		if (registering) {
 			let success: boolean = true;
-			statusText.innerText = '';
 			try {
-				client.register(username, password)
+				await client.register(username, password)
 			} catch (error) {
 				success = false;
 				statusText.innerText = `couldn't register. ${error}`;
+				console.error(error);
+				return;
 			}
 			if (!success)
 				return;
 		}
-		e.preventDefault();
-		statusText.innerText = '';
 		let success: boolean = true;
 		try {
 			await client.login(username, password)
@@ -48,7 +50,7 @@
 			try {
 				await client.loginToken(localStorage.getItem('token') as string)
 			} catch (error) {
-				statusText.innerText = `Couldn't log in using token. ${(error as Error | string).toString()}`
+				statusText.innerText = `Couldn't log in using token. ${String(error as Error | string)}`
 				success = false;
 			} finally {
 				if (!success)
@@ -99,6 +101,10 @@
 				register
 			{/if}</a>
 	</form>
+	<details>
+		<summary>Server switcher</summary>
+		<ServerSwitcher />
+	</details>
 	<br>
 	domestique svelte. made by berry with blood sweat and (a lack of) tears
 </center>
