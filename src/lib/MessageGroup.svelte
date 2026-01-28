@@ -12,6 +12,9 @@
             content = content.replace(/^.+?: /g,'');
         return content
     }
+    export function add_message(message: CMessage) {
+        messages.push(message)
+    }
 </script>
 
 <div class="message-group {messages[0]?.id === '0' ? 'ghost' : ''}">

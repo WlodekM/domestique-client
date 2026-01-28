@@ -3,8 +3,8 @@
 
 	const SERVERS: Record<string, [string, string]> = {
 		'Rugia': [
-			'wss://api.chat.eqilia.eu/api/v0/live/ws',
-			'https://api.chat.eqilia.eu'
+			'wss://chatdomestique.fr/api/v0/live/ws',
+			'https://chatdomestique.fr'
 		],
 		'berry\'s server': [
 			'wss://domestique.goog-search.eu.org/api/v0/live/ws',
@@ -17,15 +17,15 @@
 	}
 	let serverSymbol = Symbol()
 	function getCurrentServer() {
-		const wsurl: string = localStorage.getItem('wsurl') ?? "wss://api.chat.eqilia.eu/api/v0/live/ws";
-		const apiurl: string = localStorage.getItem('apiurl') ?? "https://api.chat.eqilia.eu";
+		const wsurl: string = localStorage.getItem('wsurl') ?? "wss://chatdomestique.fr/api/v0/live/ws";
+		const apiurl: string = localStorage.getItem('apiurl') ?? "https://chatdomestique.fr";
 		const [name] = Object.entries(SERVERS)
 			.find(([_,[ws, api]]) => ws == wsurl && api == apiurl) ??
 			['Custom'];
 		return name;
 	}
-	let customWsUrl = localStorage.getItem('wsurl') ?? "wss://api.chat.eqilia.eu/api/v0/live/ws";
-	let customApiUrl = localStorage.getItem('apiurl') ?? "https://api.chat.eqilia.eu";
+	let customWsUrl = localStorage.getItem('wsurl') ?? "wss://chatdomestique.fr/api/v0/live/ws";
+	let customApiUrl = localStorage.getItem('apiurl') ?? "https://chatdomestique.fr";
 </script>
 
 Current server: {#key serverSymbol}{getCurrentServer()}{/key}
