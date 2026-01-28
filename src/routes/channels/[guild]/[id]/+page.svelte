@@ -160,8 +160,9 @@
 							console.log("re-rendering");
 							symbolThing = Symbol();
 							const parent: HTMLDivElement = messagesElem.parentElement as HTMLDivElement;
+							console.log(parent.scrollHeight, parent.scrollTop, parent.offsetHeight)
 							let scrolledToBottom = //@ts-ignore: idk y but it no like scrollTopMax
-								parent.scrollTopMax == parent.scrollTop;
+								parent.scrollHeight - parent.offsetHeight == parent.scrollTop;
 							await tick();
         					if(scrolledToBottom) scrollToBottomOfElement(parent);
 							input.value = "";

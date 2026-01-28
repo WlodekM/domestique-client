@@ -1,10 +1,18 @@
 <script>
+    import requireLogin from "$lib/requireLogin";
 	import Topbar from "$lib/Topbar.svelte";
-	import './global.css'
+	import './global.css';
+	import { page } from "$app/stores";
+	console.log($page.route.id)
+	const readyPromise = $page.route.id == '/login' ? new Promise((r)=>{r('meow')}) : requireLogin();
 </script>
 <div class="page">
-	<Topbar />
-	<slot></slot>
+	{#await readyPromise}
+		logging in
+	{:then}
+		<Topbar />
+		<slot></slot>
+	{/await}
 </div>
 
 <style>

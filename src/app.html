@@ -4,8 +4,29 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+		<script>
+			(function (elmProto) {
+				if ('scrollTopMax' in elmProto) {
+					return;
+				}
+				Object.defineProperties(elmProto, {
+					'scrollTopMax': {
+						get: function scrollTopMax() {
+							return this.scrollHeight - this.clientTop;
+						}
+					},
+					'scrollLeftMax': {
+						get: function scrollLeftMax() {
+							return this.scrollWidth - this.clientLeft;
+						}
+					}
+				});
+			}
+			)(Element.prototype);
+			// this shouldnt be here :3
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

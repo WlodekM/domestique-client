@@ -3,7 +3,7 @@
     color: #ffc3f1;
     --bg: #251d23;
     background: var(--bg);
-    font-family: 'Terminus', Courier, 'Courier New', monospace;
+    font-family: 'Terminess Nerd Font Mono', 'Terminus', Courier, 'Courier New', monospace;
 }
 
 body {
