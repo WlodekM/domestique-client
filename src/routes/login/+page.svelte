@@ -57,6 +57,11 @@
 					return;
 				console.log('succees?')
 				setupWs()
+				if (client.isReady) {
+					$showNavbar = true;
+					$page = 'home';
+					goto('/home');
+				} else
 				client.on('ready', () => {
 					$showNavbar = true;
 					$page = 'home';
